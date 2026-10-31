@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111111">
+  <title>Krown Store — Commander</title>
+  <style>
+    :root{--bg:#f5f3ef;--ink:#171717;--muted:#6d6a65;--gold:#c69b45;--line:#e6e0d6;--white:#fff}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+    .top{background:#111;color:#fff;text-align:center;padding:27px 18px 25px}
+    .crown{font-size:27px;color:#e0b65d}
+    h1{margin:7px 0 5px;font-size:30px;letter-spacing:3px}
+    .tag{margin:0;color:#d9d3c8;font-size:13px;letter-spacing:1.2px}
+    main{width:min(100% - 28px,560px);margin:24px auto 40px}
+    .intro{text-align:center;margin:0 0 20px}
+    .intro h2{font-size:22px;margin:0 0 7px}
+    .intro p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+    form{background:var(--white);padding:22px;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 28px #1b160d0b}
+    label{display:block;font-size:13px;font-weight:700;margin:0 0 7px}
+    input,textarea,select{width:100%;padding:13px 12px;border:1px solid #d9d4cb;border-radius:9px;font:inherit;font-size:15px;background:#fff;color:#171717;margin-bottom:16px}
+    textarea{min-height:78px;resize:vertical}
+    input:focus,textarea:focus,select:focus{outline:2px solid #d9b66e;border-color:transparent}
+    .total{background:#f7f2e8;border:1px solid #eadcc0;border-radius:10px;padding:13px;margin:2px 0 17px}
+    .total label{margin-bottom:8px}
+    .amount{display:flex;align-items:center;gap:9px}
+    .amount input{margin:0;background:#fff}
+    .currency{font-weight:700;color:#6d5428}
+    button{width:100%;border:0;border-radius:10px;padding:15px;background:#171717;color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+    button:active{transform:scale(.99)}
+    .note{font-size:12px;color:var(--muted);line-height:1.5;text-align:center;margin:14px 4px 0}
+    footer{text-align:center;color:var(--muted);font-size:12px;padding:0 15px 28px}
+    .wa{color:#187b49;font-weight:700}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="crown">♛</div>
+    <h1>KROWN STORE</h1>
+    <p class="tag">LE STYLE, À VOTRE PORTÉE</p>
+  </header>
+  <main>
+    <section class="intro">
+      <h2>Finaliser ma commande</h2>
+      <p>Remplis les informations ci-dessous. Ta commande sera envoyée directement sur WhatsApp.</p>
+    </section>
+    <form id="orderForm">
+      <label for="firstName">Prénom</label>
+      <input id="firstName" name="firstName" autocomplete="given-name" placeholder="Ton prénom" required>
+      <label for="lastName">Nom</label>
+      <input id="lastName" name="lastName" autocomplete="family-name" placeholder="Ton nom" required>
+      <label for="phone">Numéro de téléphone</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="Ex. 07 00 00 00 00" required>
+      <label for="address">Adresse de livraison</label>
+      <textarea id="address" name="address" autocomplete="street-address" placeholder="Commune, quartier, rue et indications utiles" required></textarea>
+      <div class="total">
+        <label for="total">Montant total de la commande</label>
+        <div class="amount">
+          <input id="total" name="total" type="number" min="0" step="1" placeholder="Ex. 15000" required>
+          <span class="currency">FCFA</span>
+        </div>
+      </div>
+      <label for="payment">Mode de paiement</label>
+      <select id="payment" name="payment" required>
+        <option value="">Choisir un mode de paiement</option>
+        <option>Paiement à la livraison</option>
+        <option>Orange Money</option>
+        <option>MTN Mobile Money</option>
+        <option>Wave</option>
+      </select>
+      <button type="submit">Confirmer ma commande sur WhatsApp</button>
+      <p class="note">En cliquant, WhatsApp s'ouvrira avec le récapitulatif de ta commande. Tu pourras vérifier le message avant de l'envoyer.</p>
+    </form>
+  </main>
+  <footer>© <span id="year"></span> Krown Store · Service client sur <span class="wa">WhatsApp</span></footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('orderForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const v = id => document.getElementById(id).value.trim();
+      const total = Number(v('total'));
+      if (!Number.isFinite(total) || total <= 0) {
+        alert('Entre un montant valide supérieur à zéro.');
+        return;
+      }
+      const message = [
+        'Bonjour Krown Store ! Je souhaite confirmer une commande.',
+        '',
+        'Prénom : ' + v('firstName'),
+        'Nom : ' + v('lastName'),
+        'Téléphone : ' + v('phone'),
+        'Adresse de livraison : ' + v('address'),
+        'Montant total : ' + new Intl.NumberFormat('fr-FR').format(total) + ' FCFA',
+        'Mode de paiement : ' + v('payment')
+      ].join('\n');
+      window.location.href = 'https://wa.me/225717425597?text=' + encodeURIComponent(message);
+    });
+  </script>
+</body>
+</html>
